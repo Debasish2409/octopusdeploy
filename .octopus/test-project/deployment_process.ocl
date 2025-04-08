@@ -1,0 +1,39 @@
+step "manual-intervention-required" {
+    condition = "Always"
+    name = "Deployment_Approval"
+
+    action {
+        action_type = "Octopus.Manual"
+        channels = ["onetime-test-channel", "bau-release-channel"]
+        properties = {
+            Octopus.Action.Manual.BlockConcurrentDeployments = "False"
+            Octopus.Action.Manual.Instructions = "Please validate"
+            Octopus.Action.Manual.ResponsibleTeamIds = "space-managers"
+        }
+    }
+}
+
+step "run-a-script" {
+    name = "Run a Script"
+    properties = {
+        Octopus.Action.TargetRoles = "common-web-server-1"
+    }
+
+    action {
+        action_type = "Octopus.Script"
+        channels = ["onetime-test-channel", "bau-release-channel"]
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                echo $(get_octopusvariable "Octopus.ProjectGroup.Name")
+                database_url=$(get_octopusvariable "DB_URL")
+                echo "Hello World"
+                echo $database_url
+                EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "Bash"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool_variable = ""
+    }
+}

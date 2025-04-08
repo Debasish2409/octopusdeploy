@@ -1,0 +1,25 @@
+variable "DB_URL" {
+    value "cd01@testdb.com" {
+        environment = ["cd01"]
+    }
+
+    value "cd02@testdb.com" {
+        description = ""
+        environment = ["cd02"]
+    }
+
+    value "uat@testdb.com" {
+        description = ""
+        environment = ["uat"]
+    }
+
+    value "prod@proddb.com" {
+        description = ""
+        environment = ["production"]
+    }
+
+    value "dr@proddb.com" {
+        description = ""
+        environment = ["dr"]
+    }
+}
